@@ -1,0 +1,49 @@
+
+ create external table tab_teste (
+         antecedent_length     INT, 
+         consequent            STRING, 
+         confidence            DOUBLE,  
+         freq                  DOUBLE, 
+         suport                DOUBLE,  
+         lift                  DOUBLE,
+         antecedent_split_0    STRING, 
+         antecedent_split_1    STRING, 
+         antecedent_split_2    STRING, 
+         antecedent_split_3    STRING,
+         antecedent_split_4    STRING, 
+         antecedent_split_5    STRING )
+      ROW FORMAT delimited fields terminated by ',' lines terminated by '\n' stored as textfile LOCATION '/user/labdata/teste';
+
+
+
+
+create external table produtos (
+        product_id   STRING,
+        product_name STRING, 
+        aisle_id     int, 
+        department_id int)
+     ROW FORMAT delimited fields terminated by ',' lines terminated by '\n' stored as textfile LOCATION '/user/labdata/produtos';
+
+
+
+create table tab_teste_produtos 
+     as 
+select t.antecedent_length,
+       t.antecedent_split_0, p0.product_name as product_antec_0_name, 
+       t.antecedent_split_1, p1.product_name as product_antec_1_name,  
+       t.antecedent_split_2, p2.product_name as product_antec_2_name,  
+       t.antecedent_split_3, p3.product_name as product_antec_3_name,  
+       t.antecedent_split_4, p4.product_name as product_antec_4_name,  
+       t.antecedent_split_5, p5.product_name as product_antec_5_name,  
+       t.consequent, p6.product_name as product_conseq_name, 
+       t.confidence, t.freq, t.suport, t.lift 
+from tab_teste t left outer join produtos p0 on (t.antecedent_split_0 = p0.product_id) 
+                left outer join produtos p1 on (t.antecedent_split_1 = p1.product_id) 
+                left outer join produtos p2 on (t.antecedent_split_2 = p2.product_id) 
+                left outer join produtos p3 on (t.antecedent_split_3 = p3.product_id) 
+                left outer join produtos p4 on (t.antecedent_split_4 = p4.product_id) 
+                left outer join produtos p5 on (t.antecedent_split_5 = p5.product_id) 
+                left outer join produtos p6 on (t.consequent = p6.product_id);
+
+
+
